@@ -11,7 +11,7 @@ def hola(message):
     tb.reply_to(message, "Howdy, how are you doing?")
 
 @tb.message_handler(commands=['lista'])
-def hola(message):
+def printlista(message):
     tb.reply_to(message, gets.items())
 
 # @tb.message_handler(func=lambda message: True)
@@ -24,11 +24,17 @@ def anadirList(message):
     texts = text.split(' ')
     cadena=""
     for elemento in texts:
-        if elemento!="/add":
-            lista.append(elemento)
+        if elemento not in lista:
+            if elemento!="/add":
+                lista.append(elemento)
+        else:
+            tb.reply_to(message, "Si " + elemento + " ya viene, pa que le invitan")
     for elemento in lista:
         cadena=cadena+elemento+"\n"
-    tb.reply_to(message,cadena)
+    if(cadena):
+        tb.reply_to(message,cadena)
+    else:
+        tb.send_message(message.chat.id,"Lista vacia, usame como \"/add nombre1 nombre2\".")
 
 @tb.message_handler(commands=['del'])
 def borrarList(message):
@@ -37,10 +43,16 @@ def borrarList(message):
     cadena=""
     for elemento in texts:
         if elemento!="/del":
-            lista.remove(elemento)
+            if elemento in lista:
+                lista.remove(elemento)
+            else:
+                tb.reply_to(message, "Hijo de puta, "+elemento+" no existe")
     for elemento in lista:
         cadena = cadena + elemento + "\n"
-    tb.reply_to(message, cadena)
+    if (cadena):
+        tb.reply_to(message, cadena)
+    else:
+        tb.send_message(message.chat.id, "No va ni peter")
 
 @tb.message_handler(commands=['gente'])
 def imprimeGente(message):
